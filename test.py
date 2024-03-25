@@ -1,8 +1,20 @@
 #Import functions from functions.py
-#import file
+import pandas as pd
+import Functions as fc
+
 
 #Create Main
+def main(): 
+    df = pd.read_excel('test.xlsx')
 
-#import test excel file
+    df = fc.create_student(df, "81598", "81598", "12/25/24 3:00pm", "test@email.edu", "student_class", "instructor", "name", "role", "department", "institution", "service", "caseName")
+    df = fc.create_student(df, "56283", "81598", "12/25/24 3:00pm", "test@email.edu", "student_class", "instructor", "name", "role", "department", "institution", "service", "caseName")
+    
 
-#Test each function with separate test cases, 2 test cases per function
+
+
+
+
+
+if __name__ == "__main__":
+    main()
