@@ -38,9 +38,20 @@ def create_student(df, barcode, id, time_in, email, student_class, instructor, n
     return updated_df
 
 
-#Read Function
-    #Gets student data based off of name or barcode etc
-    #iterate through columns, return the value inputted
+##Read Function
+#print all names from column 'name'
+def get_names(df): 
+    print(df['name'])
+
+#find student by id in the dataframe, print student info
+def get_student(df, student_id):
+    print("Searching for student...")
+    student =  df.loc[df['id'] == student_id]
+    if student.empty:
+        print("No matches found")
+    else:
+        print(student)
+    print("Search complete")
 
 #Update Function 
     #Validate Data before updating
