@@ -5,7 +5,9 @@ import Functions as fc
 
 #Create Main
 def main(): 
-    df = pd.read_excel('test.xlsx')
+    file_path = "C:\\Users\\pc\\Downloads\\KMC_Test_Students.xlsx"
+
+    df = pd.read_excel(file_path)
 
     df = fc.create_student(df, "81598", "81598", "12/25/24 3:00pm", "test@email.edu", "student_class", "instructor", "name", "role", "department", "institution", "service", "caseName")
     df = fc.create_student(df, "56283", "81598", "12/25/24 3:00pm", "test@email.edu", "student_class", "instructor", "name", "role", "department", "institution", "service", "caseName")
