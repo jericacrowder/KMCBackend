@@ -60,4 +60,14 @@ def get_student(df, student_id):
 #Delete Function
     #Remove student based on certain value like barcode name etc.
 
+#Saves excel file as a CSV for easy importing to google sheets
+def saveDailyCSV(df):
+    # Exclude the first row
+    df_to_save = df.iloc[1:].reset_index(drop=True)
+    #Sets the file path 
+    file_path = "C:\\Users\\pc\\Downloads\\daily_log.csv"
+    #Creates a csv file with the excel file data
+    df_to_save.to_csv(file_path, index=False)
+    print("CSV saved, excluding the first row.")
+
 
