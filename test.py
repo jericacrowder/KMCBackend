@@ -15,7 +15,9 @@ def main():
     fc.get_names(df)
     fc.get_student(df, "749309")
 
+    fc.saveDailyCSV(df)
 
+    fc.saveSpecificClassDaily(df, "student_class")
 
 
 
