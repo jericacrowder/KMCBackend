@@ -108,6 +108,30 @@ def saveDailyCSV(df):
     file_path = "C:\\Users\\pc\\Downloads\\daily_log.csv"
     #Creates a csv file with the excel file data
     df_to_save.to_csv(file_path, index=False)
-    print("CSV saved, excluding the first row.")
 
+#Saves a specific class's attendance as a pdf
+def saveSpecificClassDaily(df, specified_class):
+    #Sets the file path 
+    file_path = "C:\\Users\\pc\\Downloads\\daily_class_log.pdf"
+    #Sets the max number of students, change as needed
+    max_students = 30
+    #Creates a dataframe with only students from the specified class
+    filtered_df = df[df["student_class"] == specified_class]
+    
+    # Create a figure and a single subplot
+    fig, ax = plt.subplots(figsize=(11, len(filtered_df)))
+    #Hide axes
+    ax.axis("off")
 
+    #Create the table with the filtered dataframe
+    chart = ax.table(cellText = filtered_df.to_numpy(), colLabels = filtered_df.columns.tolist(), loc='center', cellLoc='center', rowLoc='center')
+
+    # Adjust the font size of the table here
+    chart.set_fontsize(10)
+    chart.auto_set_column_width(col=list(range(len(filtered_df.columns))))
+
+    # Save the figure as a PDF
+    plt.savefig(file_path)
+
+    # Clear the figure to free memory, especially important if calling this function multiple times
+    plt.close(fig)
