@@ -1,6 +1,9 @@
 #Import pandas library
 import pandas as pd
-
+import matplotlib.pyplot as plt
+from email.message import EmailMessage
+from email.mime.application import MIMEApplication
+import smtplib
 
 #create Student Class
 class Student:
@@ -33,20 +36,19 @@ def create_student(df, barcode, id, time_in, email, student_class, instructor, n
     #This creates the new student and appends it to the next available row in the excel file
     updated_df = df._append(student_dict, ignore_index=True)
     #Creates a new updated excel
-    updated_df.to_excel('student_data_updated.xlsx', index=False)
+    updated_df.to_excel("student_data_updated.xlsx", index=False)
     #returns the updated dataframe so you can continue making changes
     return updated_df
-
 
 ##Read Function
 #print all names from column 'name'
 def get_names(df): 
-    print(df['name'])
+    print(df["name"])
 
 #find student by id in the dataframe, print student info
 def get_student(df, student_id):
     print("Searching for student...")
-    student =  df.loc[df['id'] == student_id]
+    student =  df.loc[df["id"] == student_id]
     if student.empty:
         print("No matches found")
     else:
@@ -61,7 +63,7 @@ def get_student(df, student_id):
     #Remove student based on certain value like barcode name etc.
 
 #Saves excel file as a CSV for easy importing to google sheets
-def saveDailyCSV(df):
+def save_daily_CSV(df):
     # Exclude the first row
     df_to_save = df.iloc[1:].reset_index(drop=True)
     #Sets the file path 
@@ -70,11 +72,9 @@ def saveDailyCSV(df):
     df_to_save.to_csv(file_path, index=False)
 
 #Saves a specific class's attendance as a pdf
-def saveSpecificClassDaily(df, specified_class):
+def save_specific_class_daily(df, specified_class):
     #Sets the file path 
     file_path = "C:\\Users\\pc\\Downloads\\daily_class_log.pdf"
-    #Sets the max number of students, change as needed
-    max_students = 30
     #Creates a dataframe with only students from the specified class
     filtered_df = df[df["student_class"] == specified_class]
     
@@ -95,3 +95,61 @@ def saveSpecificClassDaily(df, specified_class):
 
     # Clear the figure to free memory, especially important if calling this function multiple times
     plt.close(fig)
+
+#Send an email with a PDF attachment (Only works if you have 2 step authentication with google)
+def send_email_with_pdf_attachment(send_from, send_from_password, send_to, specified_class, pdf_file_path):
+    #Gmail -> smtp.gmail.com
+    #Outlook -> smpt.office365.com
+    #Yahoo -> smtp.mail.yahoo.com
+    smtp_server = "smtp.gmail.com"
+
+    #SSL -> 465 (Security is established before data is exchanged)
+    #STARTTLS -> 587 (Encryption is after both client and server supports)
+    smtp_port = 465
+
+    #Your full email address
+    smtp_user = send_from
+
+    #Your email address password sort of
+    #Go to manage account settings of your google account
+    #Go to security, then go to 2-step verification and at the bottom app passwords
+    #The app password created (should be 16 characters will be the password you input as your email password)
+    smtp_password = send_from_password
+
+    # Extract name from email address (before the '@')
+    recipient_name = send_to.split('@')[0]
+
+    # Email subject includes specified class and date
+    subject = f"{specified_class} Attendance"
+
+    # Custom message body
+    message_body = f"""
+        Hello {recipient_name},
+
+        This is an automated email sent by python. The PDF attached to this message contains information about your class attendance.
+
+        Thank you,
+        Code Society
+    """
+
+    # Create the email message
+    msg = EmailMessage()
+    msg["From"] = send_from
+    msg["To"] = send_to
+    msg["Subject"] = subject
+    msg.set_content(message_body)
+
+    # Read the PDF file's content
+    with open(pdf_file_path, 'rb') as file:
+        pdf_content = file.read()
+        #Names the pdf  attachment according to the filepath
+        pdf_name = pdf_file_path.split('/')[-1]
+        #Attaches the pdf to the message
+        msg.add_attachment(pdf_content, maintype = "application", subtype = "pdf", filename = pdf_name)
+
+    # Send the email via SMTP
+    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+
+    print(f"Email sent to {send_to} with attachment test3-30-24")
