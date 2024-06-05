@@ -21,7 +21,8 @@ def main():
 
     fc.saveSpecificClassDaily(df, "student_class")
 
-
+    #fill in the parameters to test this function
+    fc.send_email_with_pdf_attachment()
 
 
 if __name__ == "__main__":
